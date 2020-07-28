@@ -1,0 +1,668 @@
+#Definition der Standard Button --> Hintergrund und Rahmen:
+<Button>:
+
+    #hintergrund:
+    background_color: 82/255, 195/255, 1, 1 # color: OHS-Blue
+
+
+#Windowmanager --> alle screens die geordnet werden sollen müssen hier rein
+WindowManager:
+
+    #alle Screens:
+    HomeScreen:
+    BarcodeReaderScreen:
+    VereinnahmenScreen:
+    InspektionScreen:
+    WartungScreen:
+    VersandScreen:
+
+
+
+#=======================================================================================================================
+
+#Layout und Design der Screens:
+
+# Home Screen -->
+<HomeScreen>:
+
+    # HomeScreen name:
+    name: "home"
+
+
+    # Hintergrund -->
+    canvas.before:
+        Color:
+            rgba: 1, 1, 1, 1 # color: white
+        Rectangle:
+            size: self.size
+            pos: self.pos
+
+
+    #Widget Manager FolatLayout, für relative positionsangaben:
+    FloatLayout:
+
+
+        Image:
+            source: "ohs.png"
+            size_hint: 0.7, 0.2
+            pos_hint: {"x":0.15, "y":0.75}
+            allow_stretch: False
+            keep_ratio: True
+
+
+        # Vereinnahmen-Button --> Button 1:
+        Button:
+
+            #Button Design und positionierung
+            size_hint: 0.7, 0.1
+            pos_hint: {"x":0.15, "y":0.55}
+            text: "VEREINNAHMEN"
+            font_size: 30
+            on_release:
+                app.root.current = "barcode_reader"
+                root.manager.transition.direction = "left"
+                #beim betätigen des buttons wird vereinnahmen modus aktiviert
+                root.modus.set_mode("VEREINNAHMEN")
+
+
+        # Inspektions-Button --> Button 2:
+        Button:
+
+            #Button Design und positionierung
+            size_hint: 0.7, 0.1
+            pos_hint: {"x":0.15, "y":0.4}
+            text: "INSPEKTION"
+            font_size: 30
+            on_release:
+                app.root.current = "inspektion"
+                root.manager.transition.direction = "left"
+                #beim betätigen des buttons wird inspektions modus aktiviert
+                root.modus.set_mode("INSPEKTION")
+
+        # Wartung-Button --> Button 3:
+        Button:
+
+            #Button Design und positionierung
+            size_hint: 0.7, 0.1
+            pos_hint: {"x":0.15, "y":0.25}
+            text: "WARTUNG"
+            font_size: 30
+            on_release:
+                app.root.current = "wartung"
+                root.manager.transition.direction = "left"
+                #beim betätigen des buttons wird wartungs modus aktiviert
+                root.modus.set_mode("WARTUNG")
+
+
+        # Versand-Button --> Button 4:
+        Button:
+
+            #Button Design und positionierung
+            size_hint: 0.7, 0.1
+            pos_hint: {"x":0.15, "y":0.1}
+            text: "VERSAND"
+            font_size: 30
+            on_release:
+                app.root.current = "versand"
+                root.manager.transition.direction = "left"
+                #beim betätigen des buttons wird versand modus aktiviert
+                root.modus.set_mode("VERSAND")
+
+
+
+
+#=======================================================================================================================
+
+#allgemeiner Barcode-Reader für alle Modis
+<BarcodeReaderScreen>:
+
+    tool_ean: tool_ean
+    detektor: detektor
+
+    # barcodescreen name:
+    name: "barcode_reader"
+
+    # Hintergrund -->
+    canvas.before:
+        Color:
+            rgba: 1, 1, 1, 1 # color: white
+        Rectangle:
+            size: self.size
+            pos: self.pos
+
+
+    #module für barcode scanner
+    #:import ZBarCam kivy_garden.zbarcam.ZBarCam
+    #:import ZBarSymbol pyzbar.pyzbar.ZBarSymbol
+
+
+    # Widgetmanager FloatLayout, für relative Positionsangaben
+    FloatLayout:
+
+        # Barcode-Label:
+        Label:
+
+            #text: "BARCODES"
+            #Label Design und positionierung:
+            size_hint: 0.7, 0.1
+            pos_hint: {"x":0.15, "y":0.85}
+            color: 0, 69/255, 99/255, 1 # color: OHS-Blue
+            font_size: 50
+
+
+        # Barcode Scanner -->
+        ZBarCam:
+
+            #id benutzen um EAN zu getten
+            id: detektor
+            size_hint: 0.7, 0.5
+            pos_hint: {"x":0.15, "y":0.3}
+            # checks only EAN13 and return the code
+            code_types: ZBarSymbol.QRCODE, ZBarSymbol.EAN13
+
+        # Textinput für den gelesenen EAN -->
+        TextInput:
+
+            id: tool_ean
+            size_hint: 0.7, 0.1
+            pos_hint: {"x":0.15, "y":0.15}
+            multiline: False
+
+            #gelesenen Barcode als textinput:
+
+            #replace und pos um str(int) zu erhalten
+            text: ', '.join([str(symbol.data) for symbol in detektor.symbols])[1:].replace("'","")
+
+
+        #Button zum Bestätigen
+        Button:
+
+            # Button design und positionierung:
+            size_hint: 0.2, 0.075
+            pos_hint: {"x":0.25, "y":0.025}
+            text: "OK"
+            on_release:
+                root.ok()
+
+
+
+        #Button zum zurückkehren zum Hauptmenü
+        Button:
+
+            # Button design und positionierung
+            size_hint: 0.2, 0.075
+            pos_hint: {"x":0.55, "y":0.025}
+            text: "HOME"
+            on_release:
+                app.root.current = "home"
+                root.manager.transition.direction = "right"
+
+
+
+
+
+
+
+
+#=======================================================================================================================
+
+
+# Barcode reader Screen für "Vereinnnahmen"
+<VereinnahmenScreen>:
+
+
+    #name des screens im kv file
+    name: "vereinnahmen"
+
+    # Hintergrund -->
+    canvas.before:
+        #Color:
+            #rgba: 1, 1, 1, 1 # color: white
+        Rectangle:
+            size: self.size
+            pos: self.pos
+
+
+    #Grid-manager FloatLayout für relative positionsangaben
+    FloatLayout:
+
+        #OHS-LOGO
+        Image:
+            size_hint: 0.5, 0.3
+            pos_hint: {"x":0.25, "y":0.4}
+            source: "ohs.png"
+            #allow_stretch: False
+            keep_ratio: True
+
+        # Label vom Modus
+        Label:
+
+
+            # Label design und positionierung
+            size_hint: 0.7, 0.1
+            pos_hint: {"x":0.15, "y":0.85}
+            text: "VEREINNAHMEN"
+            color: 0, 69/255, 99/255, 1 # color: OHS-Blue
+            font_size: 50
+
+        #Button welcher zum Barcode reader führt
+        Button:
+
+            # Button design und positionierung
+            size_hint: 0.7, 0.1
+            pos_hint: {"x":0.15, "y":0.15}
+            text: "BARCODES LESEN"
+            on_release:
+                app.root.current = "barcode_reader"
+                root.manager.transition.direction = "left"
+
+
+
+        #Back Button führt zum Hauptmenü:
+        Button:
+
+            # Button design und positionierung
+            size_hint: 0.2, 0.075
+            pos_hint: {"x":0.4, "y":0.025}
+            text: "HOME"
+            on_release:
+                app.root.current = "home"
+                root.manager.transition.direction = "right"
+
+
+
+#=======================================================================================================================
+
+#inspektion Screen
+<InspektionScreen>:
+
+
+
+    #kivy-erkennungs name definieren
+    name: "inspektion"
+
+    #Hintergrund -->
+    canvas.before:
+        Color:
+            rgba: 1, 1, 1, 1  # color: white
+        Rectangle:
+            size: self.size
+            pos: self.pos
+
+
+    # Grid-manager FloatLayout für relative positionsangaben
+    FloatLayout:
+
+        #Inspektion Label:
+        Label:
+
+            #label designen und positionieren
+            size_hint: 0.7, 0.1
+            pos_hint: {"x":0.15, "y":0.85}
+            text: "INSPEKTION"
+            color: 0, 69/255, 99/255, 1 # color: OHS-Blue
+            font_size: 50
+
+
+        #===================SLIDER========================
+
+        #Label für Slider:
+        Label:
+
+            #label designen und positionieren
+            size_hint: 0.7, 0.05
+            pos_hint: {"x":0.15, "y":0.575}
+            text: "SLIDER 1"
+            color: 0, 69/255, 99/255, 1 # color: OHS-Blue
+
+        #Slider:
+        Slider:
+
+            id: slider1
+            #Slider designen und positionieren
+            size_hint: 0.7, 0.05
+            pos_hint: {"x":0.15, "y":0.525}
+            value_track_color: 0, 69/255, 99/255, 1 # color: OHS-Blue
+            value_track: True
+            step: 1
+            min: 0
+            max: 4
+
+
+
+        #Label für Slider:
+        Label:
+
+            #Label designen und positionieren
+            size_hint: 0.7, 0.05
+            pos_hint: {"x":0.15, "y":0.475}
+            text: "SLIDER 2"
+            color: 0, 69/255, 99/255, 1 # color: OHS-Blue
+
+        #Slider:
+        Slider:
+
+            id: slider2
+            #Slider designen und positionieren
+            size_hint: 0.7, 0.05
+            pos_hint: {"x":0.15, "y":0.425}
+            value_track_color: 0, 69/255, 99/255, 1 # color: OHS-Blue
+            value_track: True
+            step: 1
+            min: 0
+            max: 4
+
+
+        #Label für Slider:
+        Label:
+
+            #Label designen und positionieren
+            size_hint: 0.7, 0.05
+            pos_hint: {"x":0.15, "y":0.375}
+            text: "SLIDER 3"
+            color: 0, 69/255, 99/255, 1 # color: OHS-Blue
+
+        #Slider:
+        Slider:
+
+            id: slider3
+            #Slider designen und positionieren
+            size_hint: 0.7, 0.05
+            pos_hint: {"x":0.15, "y":0.325}
+            value_track_color: 0, 69/255, 99/255, 1 # color: OHS-Blue
+            value_track: True
+            step: 1
+            min: 0
+            max: 4
+
+
+
+        #Label für Slider:
+        Label:
+
+            #Label designen und positionieren
+            size_hint: 0.7, 0.05
+            pos_hint: {"x":0.15, "y":0.275}
+            text: "SLIDER 4"
+            color: 0, 69/255, 99/255, 1 # color: OHS-Blue
+
+        #Slider:
+        Slider:
+
+            id: slider4
+            #Slider designen und positionieren
+            size_hint: 0.7, 0.05
+            pos_hint: {"x":0.15, "y":0.225}
+            value_track_color: 0, 69/255, 99/255, 1 # color: OHS-Blue
+            value_track: True
+            step: 1
+            min: 0
+            max: 4
+
+
+
+        #Barcode-Reader Button:
+        Button:
+
+            #Button designen und positionieren
+            size_hint: 0.7, 0.075
+            pos_hint: {"x":0.15, "y":0.75}
+            text: "BARCODE LESEN"
+            on_release:
+                app.root.current = "barcode_reader"
+                root.manager.transition.direction = "left"
+
+
+
+        #Akztptieren Button:
+        Button:
+
+            #Button designen und positionieren
+            size_hint: 0.2, 0.075
+            pos_hint: {"x":0.25, "y":0.025}
+            text: "OK"
+
+        #Back button kehrt zum Hauptmenü zurück:
+        Button:
+
+            #Button designen und positionieren
+            size_hint: 0.2, 0.075
+            pos_hint: {"x":0.55, "y":0.025}
+            text: "HOME"
+            on_release:
+                app.root.current = "home"
+                root.manager.transition.direction = "right"
+
+
+#=======================================================================================================================
+#Wartung Screen
+<WartungScreen>:
+
+    wartungs_dauer: wartungs_dauer
+
+    #kivy-erkennungs name definieren
+    name: "wartung"
+
+
+    #Hintergrund -->
+    canvas.before:
+        Color:
+            rgba: 1, 1, 1, 1 # color: white
+        Rectangle:
+            size: self.size
+            pos: self.pos
+
+
+    #Grid-manager FloatLayout für relative Positionsangaben
+    FloatLayout:
+
+        #Modus-Label Wartung
+        Label:
+
+
+            #label designen und positionieren
+            size_hint: 0.7, 0.1
+            pos_hint: {"x":0.15, "y":0.85}
+            text: "WARTUNG"
+            color: 0, 69/255, 99/255, 1 # color: OHS-Blue
+            font_size: 50
+
+
+        #Barcode-Reader Button:
+        Button:
+
+            #Button designen und positionieren
+            size_hint: 0.7, 0.075
+            pos_hint: {"x":0.15, "y":0.75}
+            text: "BARCODE LESEN"
+            on_release:
+                app.root.current = "barcode_reader"
+                root.manager.transition.direction = "left"
+
+
+
+        #Button für das starten der Zeit
+        Button:
+
+            #Button designen und positionieren
+            size_hint: 0.35, 0.1
+            pos_hint: {"x":0.15, "y":0.5}
+            text: "START"
+            on_release: root.get_time("start")
+
+
+        #Label welches die Zeit zurückgibt:
+        Label:
+
+            #Label designen und positionieren
+            size_hint: 0.25, 0.1
+            pos_hint: {"x":0.6, "y":0.5}
+            text: root.start_zeit
+            color: 0, 69/255, 99/255, 1 # color: OHS-Blue
+
+
+
+        #Button zum stoppen der Zeit:
+        Button:
+
+            #Button designen und positionieren
+            size_hint: 0.35, 0.1
+            pos_hint: {"x":0.15, "y":0.375}
+            text: "ENDE"
+            on_release: root.get_time("ende")
+
+
+
+        #Label zum stoppen der Zeit:
+        Label:
+
+            #Label designen und positionieren
+            size_hint: 0.25, 0.1
+            pos_hint: {"x":0.6, "y":0.375}
+            text: root.end_zeit
+            color: 0, 69/255, 99/255, 1 # color: OHS-Blue
+
+
+        #Label für Textinput:
+        Label:
+
+            #Label designen und positionieren
+            size_hint: 0.7, 0.05
+            pos_hint: {"x":0.15, "y":0.3}
+            text: "GESAMTDAUER IN MINUTEN"
+            color: 0, 69/255, 99/255, 1 # color: OHS-Blue
+
+
+        #Textfeld für die gesamte Dauer:
+        TextInput:
+
+            id: wartungs_dauer
+            #Textinput designen und positionieren
+            size_hint: 0.7, 0.05
+            pos_hint: {"x":0.15, "y":0.25}
+            multiline: False
+
+        #Label für Checkbox
+        Label:
+
+            #Label designen und positionieren
+            size_hint: 0.5, 0.1
+            pos_hint: {"x":0.15, "y":0.125}
+            text: "LASTPRUEFUNG"
+            color: 0, 69/255, 99/255, 1 # color: OHS-Blue
+
+        #Checkbox für die Lastprüfung
+        CheckBox:
+            canvas.before:
+                Color:
+                    rgba: 0, 69/255, 99/255, 1 # color: OHS-Blue
+                Rectangle:
+                    size: self.size
+                    pos: self.pos
+            size_hint: 0.1, 0.1
+            pos_hint: {"x":0.75, "y":0.125}
+            on_active: root.lastpruefung_check()
+
+
+
+
+
+        #Akztptieren Button:
+        Button:
+
+            #Button designen und positionieren
+            size_hint: 0.2, 0.075
+            pos_hint: {"x":0.25, "y":0.025}
+            text: "OK"
+
+        #Back button kehrt zum Hauptmenü zurück:
+        Button:
+
+            #Button designen und positionieren
+            size_hint: 0.2, 0.075
+            pos_hint: {"x":0.55, "y":0.025}
+            text: "HOME"
+            on_release:
+                app.root.current = "home"
+                root.manager.transition.direction = "right"
+
+
+
+#=======================================================================================================================
+#Versand Screen
+<VersandScreen>:
+
+    #kivy-erkennungsname definieren
+    name: "versand"
+
+    # Hintergrund -->
+    canvas.before:
+        #Color:
+            #rgba: 1, 1, 1, 1 # color: white
+        Rectangle:
+            size: self.size
+            pos: self.pos
+
+
+    #Grid-Manager FloatLayout für relative positionsangaben
+    FloatLayout:
+
+        #OHS-LOGO
+        Image:
+            size_hint: 0.5, 0.3
+            pos_hint: {"x":0.25, "y":0.4}
+            source: "ohs.png"
+            #allow_stretch: False
+            keep_ratio: True
+
+
+        #Label für den Modus
+        Label:
+
+            #label designen und positionieren
+            size_hint: 0.7, 0.1
+            pos_hint: {"x":0.15, "y":0.85}
+            text: "VERSAND"
+            color: 0, 69/255, 99/255, 1 # color: OHS-Blue
+            font_size: 50
+
+
+
+        #Button welcher zum Barcode reader führt
+        Button:
+
+            # Button design und positionierung
+            size_hint: 0.7, 0.1
+            pos_hint: {"x":0.15, "y":0.15}
+            text: "BARCODES LESEN"
+            on_release:
+                app.root.current = "barcode_reader"
+                root.manager.transition.direction = "left"
+
+
+        #Button führt Versand aus:
+        Button:
+
+            #Button design und positionierung
+            size_hint: 0.2, 0.075
+            pos_hint: {"x": 0.25, "y":0.025}
+            text: "VERSAND"
+
+
+
+        #Back Button führt zum Hauptmenü:
+        Button:
+
+            # Button design und positionierung
+            size_hint: 0.2, 0.075
+            pos_hint: {"x":0.55, "y":0.025}
+            text: "HOME"
+            on_release:
+                app.root.current = "home"
+                root.manager.transition.direction = "right"
+
+
+
+#=======================================================================================================================
+
+
