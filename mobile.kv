@@ -1,8 +1,17 @@
 #Definition der Standard Button --> Hintergrund und Rahmen:
 <Button>:
 
+    canvas.before:
+        Color:
+            rgba: 1, 1, 1, 1
+        Rectangle:
+            size: self.size
+            pos: self.pos
+
+
     #hintergrund:
-    background_color: 82/255, 195/255, 1, 1 # color: OHS-Blue
+    background_color: 0, 69/255, 99/255, 1 # color: OHS-Blue
+    #background_color: 82/255, 195/255, 1, 1 # color: OHS-Blue
 
 
 #Windowmanager --> alle screens die geordnet werden sollen müssen hier rein
