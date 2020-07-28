@@ -6,8 +6,7 @@ from kivy.properties import ObjectProperty, StringProperty
 from kivy.uix.popup import Popup
 from kivy.uix.label import Label
 from kivy.uix.screenmanager import ScreenManager, Screen
-from kivy.core.audio import SoundLoader
-from kivy_garden.zbarcam import ZBarCam
+
 
 import pickle
 import os
